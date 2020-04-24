@@ -64,3 +64,16 @@ const setAuthorizationHeader = (token) => {
   // axios allow to 'save' the authorization instead of using a bunch of times
   axios.defaults.headers.common["Authorization"] = FBIdToken;
 };
+
+// upload image
+export const uploadImage = (formData) => (dispatch) => {
+  dispatch({ type: LOADING_USER });
+  axios
+    .post("/user/image", formData)
+    .then(() => {
+      dispatch(getUserData());
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
