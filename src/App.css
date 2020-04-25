@@ -17,7 +17,10 @@ body {
 }
 .nav-container {
   margin: 0 175px 0 175px;
-  max-width: 1200px;
+}
+
+.nav-container svg {
+  color: #ffffff;
 }
 
 .toRight {
