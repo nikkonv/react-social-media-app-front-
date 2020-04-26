@@ -2,8 +2,6 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import Scream from "../components/scream/Scream";
-import Grid from "@material-ui/core/Grid";
-import Container from "@material-ui/core/Container";
 import StaticProfile from "../components/profile/StaticProfile";
 
 // redux
@@ -13,9 +11,16 @@ import { getUserData } from "../redux/actions/dataActions";
 export class user extends Component {
   state = {
     profile: null,
+    screamIdParam: null,
   };
   componentDidMount() {
     const handle = this.props.match.params.handle;
+    const screamId = this.props.match.params.screamId;
+
+    if (screamId) {
+      this.setState({ screamIdParam: screamId });
+    }
+
     this.props.getUserData(handle);
     axios
       .get(`/user/${handle}`)
@@ -26,12 +31,19 @@ export class user extends Component {
   }
   render() {
     const { screams, loading } = this.props.data;
+    const { screamIdParam } = this.state;
     const screamsMarkup = loading ? (
       <p>Loading data...</p>
     ) : screams === null ? (
       <p>This user doesnt have screams</p>
-    ) : (
+    ) : !screamIdParam ? (
       screams.map((scream) => <Scream key={scream.screamId} scream={scream} />)
+    ) : (
+      screams.map((scream) => {
+        if (scream.screamId !== screamIdParam)
+          return <Scream key={scream.screamId} scream={scream} />;
+        else return <Scream key={scream.screamId} scream={scream} openDialog />;
+      })
     );
     return (
       <Fragment>
@@ -47,6 +59,7 @@ export class user extends Component {
             )}
           </div>
         </div>
+
         <div>{screamsMarkup}</div>
       </Fragment>
     );
