@@ -14,17 +14,19 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 // Icons
-import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import CloseIcon from "@material-ui/icons/Close";
+
 // redux
 import { connect } from "react-redux";
-import { postScream } from "../redux/actions/dataActions";
+import { postScream, clearErrors } from "../redux/actions/dataActions";
 
 const styles = (theme) => ({
   ...theme.spreadIt,
   submitButton: {
     psition: "relative",
+    float: "right",
+    marginTop: 10,
   },
   progressSpinner: {
     position: "absolute",
@@ -48,8 +50,7 @@ class PostScream extends Component {
       this.setState({ errors: nextProps.UI.errors });
     }
     if (!nextProps.UI.errors && !nextProps.UI.loading) {
-      this.setState({ body: "" });
-      this.handleClose();
+      this.setState({ body: "", open: false, errors: {} });
     }
   }
 
@@ -58,6 +59,7 @@ class PostScream extends Component {
   };
 
   handleClose = () => {
+    this.props.clearErrors();
     this.setState({ open: false, errors: {} });
   };
 
@@ -136,6 +138,7 @@ class PostScream extends Component {
 
 PostScream.propTypes = {
   postScream: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   UI: PropTypes.object.isRequired,
 };
 
@@ -143,6 +146,6 @@ const mapStateToProps = (state) => ({
   UI: state.UI,
 });
 
-export default connect(mapStateToProps, { postScream })(
+export default connect(mapStateToProps, { postScream, clearErrors })(
   withStyles(styles)(PostScream)
 );
